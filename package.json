@@ -1,0 +1,18 @@
+{
+  "name": "react-component-hierarchy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/rch.js",
+  "bin": {
+    "rch": "bin/rch.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babylon": "^6.8.0",
+    "bluebird": "^3.4.0",
+    "commander": "^2.9.0",
+    "lodash": "^4.13.1",
+    "pretty-tree": "surreal9/pretty-tree"
+  }
+}
