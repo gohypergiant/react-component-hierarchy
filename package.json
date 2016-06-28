@@ -1,5 +1,5 @@
 {
-  "name": "bpxl-react-component-hierarchy",
+  "name": "react-component-hierarchy",
   "version": "1.0.0",
   "description": "Display a visual representation of your React component hierarchy in the console.",
   "homepage": "https://github.com/bpxl-labs/react-component-hierarchy",
