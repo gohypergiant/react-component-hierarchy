@@ -7,7 +7,7 @@ This script uses a fork of [pretty-tree](https://github.com/mafintosh/pretty-tre
 ## Usage
 
 ```
-> rch
+$ rch
 
   Usage: rch [opts] <path/to/rootComponent>
 

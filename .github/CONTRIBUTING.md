@@ -8,7 +8,7 @@ All issues should be created using the [new issue form](https://github.com/bpxl-
 
 ## Making changes
 
-`react-component-hierarchy` is opinionated to our style and preferences. However, we happily welcome any content changes or suggestions.
+This project is opinionated to our style and preferences. However, we happily welcome any content changes or suggestions.
 
 - Fork the repository on GitHub
 - Add in your changes
