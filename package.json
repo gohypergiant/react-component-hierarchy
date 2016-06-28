@@ -1,13 +1,31 @@
 {
-  "name": "react-component-hierarchy",
+  "name": "bpxl-react-component-hierarchy",
   "version": "1.0.0",
-  "description": "",
+  "description": "Display a visual representation of your React component hierarchy in the console.",
+  "homepage": "https://github.com/bpxl-labs/react-component-hierarchy",
+  "author": "Black Pixel",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bpxl-labs/react-component-hierarchy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bpxl-labs/react-component-hierarchy/issues"
+  },
   "main": "bin/rch.js",
   "bin": {
     "rch": "bin/rch.js"
   },
-  "author": "",
-  "license": "ISC",
+  "engine": {
+    "node": ">=4.0.0"
+  },
+  "keywords": [
+    "react",
+    "component",
+    "cli",
+    "tree",
+    "tool"
+  ],
   "dependencies": {
     "babylon": "^6.8.0",
     "bluebird": "^3.4.0",
