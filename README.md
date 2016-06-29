@@ -1,5 +1,9 @@
 # React Component Hierarchy Viewer
 
+```bashgit
+$ npm i -g react-component-hierarchy
+```
+
 This script uses a fork of [pretty-tree](https://github.com/mafintosh/pretty-tree) to build and display a visual representation of your React component hierarchy in the console. (The fork simply allows for colors of tree nodes to be depth-based)
 
 ![rch example](http://i.imgur.com/RbwB4PY.png)
@@ -7,7 +11,7 @@ This script uses a fork of [pretty-tree](https://github.com/mafintosh/pretty-tre
 ## Usage
 
 ```
-> rch
+$ rch
 
   Usage: rch [opts] <path/to/rootComponent>
 
