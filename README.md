@@ -70,4 +70,5 @@ export default SomeComponentContainer;
 
 Website: [blackpixel.com](https://blackpixel.com) &nbsp;&middot;&nbsp;
 GitHub: [@bpxl-labs](https://github.com/bpxl-labs/) &nbsp;&middot;&nbsp;
-Twitter: [@blackpixel](https://twitter.com/blackpixel)
+Twitter: [@blackpixel](https://twitter.com/blackpixel) &nbsp;&middot;&nbsp;
+Medium: [@bpxl-craft](https://medium.com/bpxl-craft)
