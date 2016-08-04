@@ -1,5 +1,10 @@
 # React Component Hierarchy Viewer
 
+[![npm](https://img.shields.io/npm/v/react-component-hierarchy.svg)]()
+[![license](https://img.shields.io/github/license/bpxl-labs/react-component-hierarchy.svg)]()
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md#pull-requests)
+[![Maintenance](https://img.shields.io/maintenance/yes/2016.svg)]()
+
 This script uses a fork of [pretty-tree](https://github.com/mafintosh/pretty-tree) to build and display a visual representation of your React component hierarchy in the console. (The fork simply allows for colors of tree nodes to be depth-based)
 
 ![rch example](http://i.imgur.com/RbwB4PY.png)
