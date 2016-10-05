@@ -65,10 +65,21 @@ function extractChildComponents(tokens, imports) {
 }
 
 function formatChild(child, parent, depth) {
+  let fileName;
+  let source;
+
+  if (child.source.startsWith('.')) {
+    // Relative import (./ or ../)
+    fileName = path.resolve(path.dirname(parent.filename) + '/' + child.source);
+    source = fileName.replace(process.cwd() + '/', '');
+  } else {
+    fileName = path.join(path.dirname(parent.filename), child.source);
+    source = child.source;
+  }
   return {
-    source: child.source,
+    source,
     name: child.name,
-    filename: path.join(path.dirname(parent.filename), child.source),
+    filename: fileName,
     children: [],
     depth,
   };
