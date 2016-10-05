@@ -198,6 +198,11 @@ function formatNodeToPrettyTree(node) {
 }
 
 function done() {
+  if (!rootNode.children) {
+    console.error('Could not find any components. Did you process the right file?');
+    process.exit(1);
+  }
+
   console.log(tree(formatNodeToPrettyTree(rootNode)));
   process.exit();
 }
