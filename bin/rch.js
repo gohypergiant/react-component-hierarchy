@@ -29,10 +29,11 @@ const rootNode = {
   name: path.basename(filename).replace(/\.jsx?/, ''),
   filename,
   depth: 0,
+  children: []
 };
 
 function extractModules(bodyItem) {
-  if (bodyItem.type === 'ImportDeclaration') {
+  if (bodyItem.type === 'ImportDeclaration' && !bodyItem.source.value.endsWith('css')) {
     return {
       name: bodyItem.specifiers[0].local.name,
       source: bodyItem.source.value,
@@ -119,7 +120,19 @@ function findContainerChild(node, body, imports, depth) {
 function processFile(node, file, depth) {
   const ast = babylon.parse(file, {
     sourceType: 'module',
-    plugins: ['jsx', 'classProperties'],
+    plugins: [
+      'asyncGenerators',
+      'classProperties',
+      'classProperties',
+      'decorators',
+      'dynamicImport',
+      'exportExtensions',
+      'flow',
+      'functionBind',
+      'functionSent',
+      'jsx',
+      'objectRestSpread'
+    ],
   });
 
   // Get a list of imports and try to figure out which are child components
@@ -139,6 +152,7 @@ function formatNodeToPrettyTree(node) {
     node.children[0].name += ' (*)';
     return formatNodeToPrettyTree(node.children[0]);
   }
+
   const newNode = node.children.length > 0 ?
   {
     label: node.name,
@@ -166,6 +180,7 @@ function processNode(node, depth) {
     // It's likely users will reference files that do not have an extension, try .js and then .jsx
     node.filename = `${node.filename}.js`;
   }
+
   readFile(node.filename, 'utf8')
     .then(file => {
       processFile(node, file, depth);
