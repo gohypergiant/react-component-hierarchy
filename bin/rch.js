@@ -6,8 +6,10 @@ const path = require('path');
 const babylon = require('babylon');
 const Promise = require('bluebird');
 const readFile = Promise.promisify(require('fs').readFile);
+const exists = require('fs').existsSync
 const _ = require('lodash');
 const tree = require('pretty-tree');
+const sourceExtensions = ['.js', '.jsx', '.es6']
 
 program
   .version('1.0.0')
@@ -117,10 +119,15 @@ function findContainerChild(node, body, imports, depth) {
 }
 
 function processFile(node, file, depth) {
-  const ast = babylon.parse(file, {
-    sourceType: 'module',
-    plugins: ['jsx', 'classProperties'],
-  });
+  let ast
+  try {
+    ast = babylon.parse(file, {
+      sourceType: 'module',
+      plugins: ['jsx', 'classProperties', 'objectRestSpread'],
+    });
+  } catch(err) {
+    console.log(err)
+  }
 
   // Get a list of imports and try to figure out which are child components
   const imports = ast.program.body.map(extractModules).filter(i => !!i);
@@ -159,15 +166,31 @@ function done() {
   process.exit();
 }
 
+function findSourceFile (fileName) {
+  const fileExt = path.extname(fileName)
+
+  if (fileExt && exists(fileName)) return fileName
+
+  const baseName = path.basename(fileName, fileExt)
+  const dirName = path.dirname(fileName)
+
+  return findWithExt(path.join(dirName, baseName), baseName) ||
+         findWithExt(path.join(dirName, baseName), 'index')
+}
+
+function findWithExt (dir, name) {
+  for (var i = 0; i < sourceExtensions.length; i++) {
+    let file = dir + '/' + name + sourceExtensions[i]
+    if (exists(file)) return file
+  }
+}
+
 function processNode(node, depth) {
   workCounter++;
-  const fileExt = path.extname(node.filename);
-  if (fileExt === '') {
-    // It's likely users will reference files that do not have an extension, try .js and then .jsx
-    node.filename = `${node.filename}.js`;
-  }
-  readFile(node.filename, 'utf8')
+  const sourceFilePath = findSourceFile(node.filename)
+  readFile(sourceFilePath, 'utf8')
     .then(file => {
+      node.filename = sourceFilePath
       processFile(node, file, depth);
       node.children.forEach(c => processNode(c, depth + 1));
       if (--workCounter <= 0) {
@@ -176,18 +199,12 @@ function processNode(node, depth) {
     })
     .catch(() => {
       --workCounter;
-      if (path.extname(node.filename) === '.js') {
-        // Look for .jsx next
-        node.filename = node.filename.replace('.js', '.jsx');
-      } else {
-        // Can't find the file.. possible third party module
-        node.filename = '';
-        if (workCounter <= 0) {
-          done();
-        }
-        return;
+      // Can't find the file.. possible third party module
+      node.filename = '';
+      if (workCounter <= 0) {
+        done();
       }
-      processNode(node, depth);
+      return;
     });
 }
 
