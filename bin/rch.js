@@ -179,6 +179,9 @@ function processNode(node, depth) {
       if (path.extname(node.filename) === '.js') {
         // Look for .jsx next
         node.filename = node.filename.replace('.js', '.jsx');
+      } else if(path.extname(node.filename) === '.jsx') {
+        // Look for /index.js next
+        node.filename = node.filename.replace('.jsx', '/index.js');
       } else {
         // Can't find the file.. possible third party module
         node.filename = '';
