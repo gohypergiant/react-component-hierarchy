@@ -11,7 +11,10 @@ const tree = require('pretty-tree');
 program
   .version('2.0.0')
   .usage('[opts] <path/to/rootComponent>')
-  .option('-m, --module-dir <dir>', 'Path to additional modules not included in node_modules e.g. src')
+  .option(
+    '-m, --module-dir <dir>',
+    'Path to additional modules not included in node_modules e.g. src'
+  )
   .option('-c, --hide-containers', 'Hide redux container components')
   .option('-t, --hide-third-party', 'Hide third party components')
   .description('React component hierarchy viewer.')
@@ -31,10 +34,14 @@ const rootNode = {
   name: path.basename(filename).replace(/\.jsx?/, ''),
   filename,
   depth: 0,
+  children: [],
 };
 
 function extractModules(bodyItem) {
-  if (bodyItem.type === 'ImportDeclaration') {
+  if (
+    bodyItem.type === 'ImportDeclaration' &&
+    !bodyItem.source.value.endsWith('css')
+  ) {
     // There may be more than one import in the declaration
     return bodyItem.specifiers.map(specifier => ({
       name: specifier.local.name,
@@ -48,12 +55,18 @@ function extractChildComponents(tokens, imports) {
   const childComponents = [];
   let childComponent;
   for (var i = 0; i < tokens.length - 1; i++) {
-    if (tokens[i].type.label === 'jsxTagStart' && tokens[i + 1].type.label === 'jsxName') {
+    if (
+      tokens[i].type.label === 'jsxTagStart' &&
+      tokens[i + 1].type.label === 'jsxName'
+    ) {
       childComponent = _.find(imports, { name: tokens[i + 1].value });
       if (childComponent) {
         childComponents.push(childComponent);
       }
-    } else if (tokens[i].type.label === 'jsxName' && tokens[i].value === 'component') {
+    } else if (
+      tokens[i].type.label === 'jsxName' &&
+      tokens[i].value === 'component'
+    ) {
       // Find use of components in react-router, e.g. `<Route component={...}>`
       childComponent = _.find(imports, { name: tokens[i + 3].value });
       if (childComponent) {
@@ -106,9 +119,11 @@ function findImportInExportDeclaration(body, exportIdentifier, imports) {
   let result;
   const importNames = imports.map(i => i.name);
   body.some(b => {
-    if (b.type === 'VariableDeclaration'
-      && b.declarations[0].id.name === exportIdentifier
-      && b.declarations[0].init.type === 'CallExpression') {
+    if (
+      b.type === 'VariableDeclaration' &&
+      b.declarations[0].id.name === exportIdentifier &&
+      b.declarations[0].init.type === 'CallExpression'
+    ) {
       // If the export is being declared with the result of a function..
       // Try to find a reference to any of the imports either in the function arguments,
       // or in the arguments of any other functions being called after this function
@@ -134,14 +149,30 @@ function findImportInExportDeclaration(body, exportIdentifier, imports) {
 // - Return that as the child
 function findContainerChild(node, body, imports, depth) {
   const exportIdentifier = extractExport(body);
-  const usedImport = findImportInExportDeclaration(body, exportIdentifier, imports);
-  return usedImport && [formatChild(usedImport, node, depth)] || [];
+  const usedImport = findImportInExportDeclaration(
+    body,
+    exportIdentifier,
+    imports
+  );
+  return (usedImport && [formatChild(usedImport, node, depth)]) || [];
 }
 
 function processFile(node, file, depth) {
   const ast = babylon.parse(file, {
     sourceType: 'module',
-    plugins: ['jsx', 'classProperties'],
+    plugins: [
+      'asyncGenerators',
+      'classProperties',
+      'classProperties',
+      'decorators',
+      'dynamicImport',
+      'exportExtensions',
+      'flow',
+      'functionBind',
+      'functionSent',
+      'jsx',
+      'objectRestSpread',
+    ],
   });
 
   // Get a list of imports and try to figure out which are child components
@@ -150,7 +181,7 @@ function processFile(node, file, depth) {
     if (!!i) {
       imports = imports.concat(i);
     }
-  };
+  }
   if (_.find(imports, { name: 'React' })) {
     // Look for children in the JSX
     const childComponents = _.uniq(extractChildComponents(ast.tokens, imports));
@@ -168,38 +199,46 @@ function formatNodeToPrettyTree(node) {
   }
   // If we have the source, format it nicely like `module/Component`
   // But only if the name won't be repeated like `module/Component/Component`
-  const source = path.basename(path.dirname(node.filename)) === node.name ? node.source : node.source + '/' + node.name;
-  const newNode = node.children.length > 0 ?
-  {
-    label: node.source && source || node.name,
-    nodes: node.children.filter(n => !n.hide).sort((a, b) => {
-      // Sort the list by source and name for readability
-      const nameA = (a.source + a.name).toUpperCase();
-      const nameB = (b.source + b.name).toUpperCase();
+  const source =
+    path.basename(path.dirname(node.filename)) === node.name
+      ? node.source
+      : node.source + '/' + node.name;
+  const newNode =
+    node.children.length > 0
+      ? {
+          label: (node.source && source) || node.name,
+          nodes: node.children
+            .filter(n => !n.hide)
+            .sort((a, b) => {
+              // Sort the list by source and name for readability
+              const nameA = (a.source + a.name).toUpperCase();
+              const nameB = (b.source + b.name).toUpperCase();
 
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
+              if (nameA < nameB) {
+                return -1;
+              }
+              if (nameA > nameB) {
+                return 1;
+              }
 
-      return 0;
-    }).map(formatNodeToPrettyTree),
-    depth: node.depth,
-  }
-  :
-  {
-    label: source,
-    depth: node.depth,
-  };
+              return 0;
+            })
+            .map(formatNodeToPrettyTree),
+          depth: node.depth,
+        }
+      : {
+          label: source,
+          depth: node.depth,
+        };
 
   return newNode;
 }
 
 function done() {
   if (!rootNode.children) {
-    console.error('Could not find any components. Did you process the right file?');
+    console.error(
+      'Could not find any components. Did you process the right file?'
+    );
     process.exit(1);
   }
 
@@ -214,7 +253,7 @@ function getPossibleNames(baseName) {
     baseName.replace('.js', '.jsx'),
     baseName.replace('.js', '/index.js'),
     baseName.replace('.js', '/index.jsx'),
-  ]
+  ];
 }
 
 function processNode(node, depth, parent) {
@@ -227,7 +266,10 @@ function processNode(node, depth, parent) {
   let possibleFiles = getPossibleNames(node.filename);
 
   if (parent && moduleDir) {
-    const baseName = node.filename.replace(path.dirname(parent.filename), moduleDir);
+    const baseName = node.filename.replace(
+      path.dirname(parent.filename),
+      moduleDir
+    );
     possibleFiles = possibleFiles.concat(getPossibleNames(baseName));
   }
 
