@@ -9,7 +9,7 @@ const _ = require('lodash');
 const tree = require('pretty-tree');
 
 program
-  .version('2.0.0')
+  .version('1.1.0')
   .usage('[opts] <path/to/rootComponent>')
   .option(
     '-m, --module-dir <dir>',

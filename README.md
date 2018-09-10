@@ -35,7 +35,7 @@ $ rch
 
 ## Requirements
 
-Currently rch is v1 and has the following requirements to understand your code:
+rch has the following requirements to understand your code:
 
 - Component source files may use either a default export or named exports
 - Components may be defined in any way (es6 `React.Component` class, functional stateless, or react.createClass)
