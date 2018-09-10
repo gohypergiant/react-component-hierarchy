@@ -1,6 +1,5 @@
 # React Component Hierarchy Viewer
 
-
 [![npm](https://img.shields.io/npm/v/react-component-hierarchy.svg)](https://www.npmjs.com/package/react-component-hierarchy)
 [![license](https://img.shields.io/github/license/bpxl-labs/react-component-hierarchy.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](.github/CONTRIBUTING.md)
@@ -38,7 +37,7 @@ $ rch
 
 Currently rch is v1 and has the following requirements to understand your code:
 
-- Must have one default export per component source file
+- Component source files may use either a default export or named exports
 - Components may be defined in any way (es6 `React.Component` class, functional stateless, or react.createClass)
 - Must use raw non-transpiled JS.
 - Must use JSX
@@ -48,13 +47,12 @@ Currently rch is v1 and has the following requirements to understand your code:
 ```js
 import { connect } from 'react-redux';
 
-const SomeComponent = ({ title }) =>
-  <div>{title}</div>;
+const SomeComponent = ({ title }) => <div>{title}</div>;
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SomeComponentContainer)
+)(SomeComponentContainer);
 ```
 
 Or you can use a separate file for your container component which is formatted approximately like this:
