@@ -19,18 +19,18 @@ Once it is installed, you can run it by passing in the path to the source of the
 
 ```
 $ rch
+Usage: rch [opts] <path/to/rootComponent>
 
-  Usage: rch [opts] <path/to/rootComponent>
+React component hierarchy viewer.
 
-  React component hierarchy viewer.
+Options:
+  -V, --version             output the version number
+  -m, --module-dir <dir>    Path to additional modules not included in node_modules e.g. src
+  -c, --hide-containers     Hide redux container components
+  -t, --hide-third-party    Hide third party components
+  -d, --scan-depth <depth>  Limit the depth of the component hierarchy that is displayed
+  -h, --help                output usage information
 
-  Options:
-
-    -h, --help              output usage information
-    -V, --version           output the version number
-    -m, --module-dir <dir>  Path to additional modules not included in node_modules e.g. src
-    -c, --hide-containers   Hide redux container components
-    -t, --hide-third-party  Hide third party components
 ```
 
 ## Requirements
