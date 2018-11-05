@@ -17,6 +17,7 @@ program
   )
   .option('-c, --hide-containers', 'Hide redux container components')
   .option('-t, --hide-third-party', 'Hide third party components')
+  .option('-d, --scan-depth <depth>', 'Limit the depth of the component hierarchy that is displayed', parseInt, Number.POSITIVE_INFINITY)
   .description('React component hierarchy viewer.')
   .parse(process.argv);
 
@@ -27,6 +28,7 @@ if (!program.args[0]) {
 const hideContainers = program.hideContainers;
 const moduleDir = program.moduleDir;
 const hideThirdParty = program.hideThirdParty;
+const scanDepth = Math.max(program.scanDepth,1);
 
 const filename = path.resolve(program.args[0]);
 
@@ -277,7 +279,9 @@ function processNode(node, depth, parent) {
     node.filename = name;
     try {
       const file = readFileSync(node.filename, 'utf8');
-      processFile(node, file, depth);
+      if(depth <= scanDepth){
+        processFile(node, file, depth);
+      }
       node.children.forEach(c => processNode(c, depth + 1, node));
       return;
     } catch (e) {}
