@@ -17,7 +17,7 @@ program
   )
   .option('-c, --hide-containers', 'Hide redux container components')
   .option('-t, --hide-third-party', 'Hide third party components')
-  .option('-d, --scan-depth <depth>', 'Limit the depth of the component hierarchy that is displayed', parseInt)
+  .option('-d, --scan-depth <depth>', 'Limit the depth of the component hierarchy that is displayed', parseInt, Number.POSITIVE_INFINITY)
   .description('React component hierarchy viewer.')
   .parse(process.argv);
 
