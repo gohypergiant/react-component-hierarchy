@@ -3,7 +3,7 @@
 'use strict'; // eslint-disable-line
 const program = require('commander');
 const path = require('path');
-const babylon = require('babylon');
+const babelParser = require('@babel/parser');
 const readFileSync = require('fs').readFileSync;
 const _ = require('lodash');
 const tree = require('pretty-tree');
@@ -158,15 +158,16 @@ function findContainerChild(node, body, imports, depth) {
 }
 
 function processFile(node, file, depth) {
-  const ast = babylon.parse(file, {
+  const ast = babelParser.parse(file, {
     sourceType: 'module',
+    tokens: true,
     plugins: [
       'asyncGenerators',
       'classProperties',
-      'classProperties',
-      'decorators',
+      'decorators-legacy',
       'dynamicImport',
-      'exportExtensions',
+      'exportDefaultFrom',
+      'exportNamespaceFrom',
       'flow',
       'functionBind',
       'functionSent',
