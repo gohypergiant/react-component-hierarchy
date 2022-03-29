@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@babel/parser@^7.16.0":
+  version "7.17.8"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.17.8.tgz#2817fb9d885dd8132ea0f8eb615a6388cca1c240"
+  integrity sha512-BoHhDJrJXqcg+ZL16Xv39H9n+AqJ4pcDrQBGZN+wHxIysrLZ3/ECwCBUch/1zUNhnsXULcONU3Ei5Hmkfk6kiQ==
+
 ansi-regex@^1.0.0, ansi-regex@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-1.1.1.tgz#41c847194646375e6a1a5d10c3ca054ef9fc980d"
@@ -13,10 +18,6 @@ ansi-styles@^2.0.1:
 archy@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/archy/-/archy-0.0.2.tgz#910f43bf66141fc335564597abc189df44b3d35e"
-
-babylon@^6.8.0:
-  version "6.18.0"
-  resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.18.0.tgz#af2f3b88fa6f5c1e4c634d1a0f8eac4f55b395e3"
 
 chalk@~1.0.0:
   version "1.0.0"
